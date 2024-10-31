@@ -28,7 +28,6 @@ class PacFlix:
         print(tabulate(self.plan_info[1:], headers=self.plan_info[0], tablefmt='github'))
 
 class User(PacFlix):
-    
     def __init__(self, username):
         super().__init__()
         self.subs_price = None
@@ -53,12 +52,10 @@ class User(PacFlix):
             print(50*'-')
 
     def subs_plan(self, new_plan):
-        referral_code = str(input('Code Refferal: '))
-
         price_basic = self.plan_info[-1][0]
         price_standard = self.plan_info[-1][1]
-        price_premium = self.plan_info[-1][2]
-
+        price_premium = self.plan_info[-1][2]   
+        referral_code = str(input('Code Refferal: '))
         # check the referral code if its available it will be get 4% discount
         for _, values in self.user_data.items():
             if referral_code in values[-1]:
@@ -90,6 +87,25 @@ class User(PacFlix):
                 print(f'Biaya langganan Rp. {self.plan_info[-1][idx_plan]:,}')
         else:
             print('Anda belum berlangganan di PacFlix, silahkan langganan terlebih dahulu.')
+
+    def upgrade_plan(self, upgraded_plan):
+        idx_current_plan = self.plan_info[0].index(self.plan)
+        idx_new_upgrade_plan = self.plan_info[0].index(upgraded_plan)
+
+        # get duration time subscription
+        if idx_new_upgrade_plan > idx_current_plan:
+            # change in database
+            self.user_data[self.username][0] = upgraded_plan
+            # change atribut instance value
+            self.plan = upgraded_plan
+            if self.duration > 12:
+                self.subs_price = self.plan_info[-1][idx_new_upgrade_plan] - (self.plan_info[-1][idx_new_upgrade_plan] * 0.05)
+        else:
+            print('Tidak bisa Downgrade !')
+        
+        
+
+
 
 
 
